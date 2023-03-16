@@ -1,33 +1,70 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+
+const FollowMouse = () => {
+  const [enabled, setEnabled] = useState(false)
+  const [position, setPosition] = useState({ x: 0, y: 0 })
+
+  useEffect(()=>{
+    const handleMove = (event) => {
+      const {clientX, clientY} = event
+      console.log({clientX, clientY})
+      setPosition({x: clientX, y: clientY})
+    }
+
+    if(enabled){
+      window.addEventListener('pointermove', handleMove)
+    }
+
+    //Limpiar la suscripcion al evento anterior
+    //Se ejecuta cuando el componente se desmonta o cuando cambian las dependencias del Hook
+    return () => {
+      console.log('cleanup')
+      window.removeEventListener('pointermove', handleMove)
+    }
+  },[enabled])
+
+  useEffect(() => {
+    document.body.classList.toggle('no-cursor', enabled)
+    return () => {
+      document.body.classList.remove('no-cursor')
+    }
+  }, [enabled])
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
+    <>
+      <div style={{
+        position: 'absolute',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        border: '1px solid #fff',
+        borderRadius: '50%',
+        opacity: 0.8,
+        pointerEvents: 'none',
+        left: -25,
+        top: -25,
+        width: 50,
+        height: 50,
+        transform: `translate(${position.x}px, ${position.y}px)`
+      }}
+      />
+       <button onClick={()=> setEnabled(!enabled)}>{enabled ? 'Desactivar Seguimiento' : 'Activar Seguimiento'}</button>
+    </>
+  )
+}
+
+
+function App() {
+
+  const [mounted, setMounted] = useState(true)
+
+  return (
+    <main>
+      <h1>Mouse Follower 🐭</h1>
+      {mounted && <FollowMouse/>}<br/>
+      <button onClick={()=> setMounted(!mounted)}> Toogle button to View FollowMouse Component</button>
+    </main>
   )
 }
 
