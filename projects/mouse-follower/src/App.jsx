@@ -2,29 +2,28 @@ import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import './App.css'
 
-
 const FollowMouse = () => {
   const [enabled, setEnabled] = useState(false)
   const [position, setPosition] = useState({ x: 0, y: 0 })
 
-  useEffect(()=>{
+  useEffect(() => {
     const handleMove = (event) => {
-      const {clientX, clientY} = event
-      console.log({clientX, clientY})
-      setPosition({x: clientX, y: clientY})
+      const { clientX, clientY } = event
+      console.log({ clientX, clientY })
+      setPosition({ x: clientX, y: clientY })
     }
 
-    if(enabled){
+    if (enabled) {
       window.addEventListener('pointermove', handleMove)
     }
 
-    //Limpiar la suscripcion al evento anterior
-    //Se ejecuta cuando el componente se desmonta o cuando cambian las dependencias del Hook
+    // Limpiar la suscripcion al evento anterior
+    // Se ejecuta cuando el componente se desmonta o cuando cambian las dependencias del Hook
     return () => {
       console.log('cleanup')
       window.removeEventListener('pointermove', handleMove)
     }
-  },[enabled])
+  }, [enabled])
 
   useEffect(() => {
     document.body.classList.toggle('no-cursor', enabled)
@@ -49,21 +48,19 @@ const FollowMouse = () => {
         transform: `translate(${position.x}px, ${position.y}px)`
       }}
       />
-       <button onClick={()=> setEnabled(!enabled)}>{enabled ? 'Desactivar Seguimiento' : 'Activar Seguimiento'}</button>
+      <button onClick={() => setEnabled(!enabled)}>{enabled ? 'Desactivar Seguimiento' : 'Activar Seguimiento'}</button>
     </>
   )
 }
 
-
-function App() {
-
+function App () {
   const [mounted, setMounted] = useState(true)
 
   return (
     <main>
       <h1>Mouse Follower 🐭</h1>
-      {mounted && <FollowMouse/>}<br/>
-      <button onClick={()=> setMounted(!mounted)}> Toogle button to View FollowMouse Component</button>
+      {mounted && <FollowMouse />}<br />
+      <button onClick={() => setMounted(!mounted)}> Toogle button to View FollowMouse Component</button>
     </main>
   )
 }
