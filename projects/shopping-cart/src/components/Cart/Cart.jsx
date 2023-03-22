@@ -5,7 +5,7 @@ import './Cart.css'
 
 export default function Cart () {
   const cartCheckBoxId = useId()
-  const { cart, addToCart, clearCart } = useCart()
+  const { cart, totalPay, addToCart, clearCart } = useCart()
 
   const CartItem = ({ thumbnail, price, title, quantity, addToCart }) => {
     return (
@@ -36,6 +36,7 @@ export default function Cart () {
             />
           ))}
         </ul>
+        <h4>Total Pay: ${totalPay}</h4>
         <button onClick={() => clearCart()}>
           <ClearCartIcon />
         </button>
